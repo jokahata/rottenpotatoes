@@ -7,7 +7,16 @@ class MoviesController < ApplicationController
   end
 
   def index
+    
     @movies = Movie.all
+	#To get every rating
+	@all_ratings = Array.new
+	@movies.each do |m|
+		if !@all_ratings.include?(m.rating)
+			@all_ratings.push(m.rating)
+		end
+	end
+
 	if (params[:order] == 'title')
 		@movies.sort_by!(&:title) #same as @movies.sort_by{|m| m.title}
 	end
