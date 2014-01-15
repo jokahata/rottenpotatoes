@@ -33,9 +33,6 @@ class MoviesController < ApplicationController
     session[:ratings].each_key do |rating|
       params[:ratings].has_key?(rating) ? (session[:ratings][rating] = true) : (session[:ratings][rating] = false)
     end
-  else
-    flash.keep
-    #redirect_to movies_path, :ratings => session[:ratings]
   end
 
   #@movies is an array so I use select
