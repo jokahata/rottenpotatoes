@@ -10,21 +10,26 @@ class MoviesController < ApplicationController
     
     @movies = Movie.all
 
-	#To get every rating in the movies we have
-	#Was not sure if instead I was supposed to go to Movie model and make like a Movies.getRating method
-	@all_ratings = Array.new
-	@movies.each do |m|
-		if !@all_ratings.include?(m.rating)
-			@all_ratings.push(m.rating)
-		end
+	@all_ratings = Movie.get_ratings
+
+	#Declares and initializes a Hash that holds whether a box is checked or not
+	@ratings_checked = Hash.new
+	@all_ratings.each do |rating|
+		@ratings_checked[rating] = true
 	end
 
-	#if a certain rating is selected
+	#If one or more ratings are selected
 	if(params[:ratings] != nil)
-		#@movies is an array
+		#Goes through the checkbox hash and set false for unchecked boxes
+		@ratings_checked.each_key do |rating|
+			(@ratings_checked[rating] = false) if !params[:ratings].has_key?(rating)
+		end
+
+		#@movies is an array so I use select
 		@movies = @movies.select { |m| params[:ratings].has_key?(m.rating)}
 	end
 
+	#Sorting procedures
 	if (params[:order] == 'title')
 		@movies.sort_by!(&:title) #same as @movies.sort_by{|m| m.title}
 	end
