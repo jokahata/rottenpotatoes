@@ -3,7 +3,7 @@
   Include:
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", :id => 'ratings_#{rating}'
+    = check_box_tag "ratings[#{rating}]", 1, session[:ratings][rating], :id => 'ratings_#{rating}'
   = submit_tag 'Refresh', :id => 'ratings_submit'
 
 %h1 All Movies
@@ -11,7 +11,7 @@
 %table#movies
   %thead
     %tr
-      %th#title_header{:class => ('hilite' if current_page?(order: 'title'))}= link_to('Movie Title', :order => 'title') 
+      %th#title_header{:class => ('hilite' if session[:order] == 'title'}= link_to('Movie Title', :order => 'title') 
       %th Rating
       %th#release_date_header{:class => ('hilite' if current_page?(order: 'release'))}= link_to('Release Date', :order => 'release')
       %th More Info

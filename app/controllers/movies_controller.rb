@@ -9,32 +9,44 @@ class MoviesController < ApplicationController
   def index
     
     @movies = Movie.all
-
 	@all_ratings = Movie.get_ratings
 
-	#Declares and initializes a Hash that holds whether a box is checked or not
-	@ratings_checked = Hash.new
-	@all_ratings.each do |rating|
-		@ratings_checked[rating] = true
+	#If there's a new ordering use it
+	if (params[:order] != nil)
+		session[:order] = params[:order]
 	end
+	
+	#Declares and initializes a Hash that holds whether a box is checked or not
+	if (session[:ratings] == nil)
+		session[:ratings] = Hash.new
+		@all_ratings.each do |rating|
+			session[:ratings][rating] = true
+		end
+	end
+
 
 	#If one or more ratings are selected
 	if(params[:ratings] != nil)
 		#Goes through the checkbox hash and set false for unchecked boxes
-		@ratings_checked.each_key do |rating|
-			(@ratings_checked[rating] = false) if !params[:ratings].has_key?(rating)
+		session[:ratings].each_key do |rating|
+			params[:ratings].has_key?(rating) ? (session[:ratings][rating] = true) : (session[:ratings][rating] = false)
 		end
-
-		#@movies is an array so I use select
-		@movies = @movies.select { |m| params[:ratings].has_key?(m.rating)}
+	else
+		flash.keep
+		#redirect_to movies_path, :ratings => session[:ratings]
 	end
 
+	#@movies is an array so I use select
+	@movies = @movies.select { |m| session[:ratings][m.rating]}
+	
 	#Sorting procedures
-	if (params[:order] == 'title')
-		@movies.sort_by!(&:title) #same as @movies.sort_by{|m| m.title}
-	end
-	if (params[:order] == 'release')
-		@movies.sort_by!(&:release_date)
+	if (session[:order] != nil)
+		if (session[:order] == 'title')
+			@movies.sort_by!(&:title) #same as @movies.sort_by{|m| m.title}
+		end
+		if (session[:order] == 'release')
+			@movies.sort_by!(&:release_date)
+		end
 	end
   end
 
