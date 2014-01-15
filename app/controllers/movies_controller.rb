@@ -9,12 +9,20 @@ class MoviesController < ApplicationController
   def index
     
     @movies = Movie.all
-	#To get every rating
+
+	#To get every rating in the movies we have
+	#Was not sure if instead I was supposed to go to Movie model and make like a Movies.getRating method
 	@all_ratings = Array.new
 	@movies.each do |m|
 		if !@all_ratings.include?(m.rating)
 			@all_ratings.push(m.rating)
 		end
+	end
+
+	#if a certain rating is selected
+	if(params[:ratings] != nil)
+		#@movies is an array
+		@movies = @movies.select { |m| params[:ratings].has_key?(m.rating)}
 	end
 
 	if (params[:order] == 'title')
