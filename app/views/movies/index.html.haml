@@ -12,6 +12,7 @@
   %thead
     %tr
       %th#title_header{:class => ('hilite' if @is_sort_title)}= link_to('Movie Title', :order => 'title') 
+      %th Director
       %th Rating
       %th#release_date_header{:class => ('hilite' if @is_sort_release)}= link_to('Release Date', :order => 'release')
       %th More Info
@@ -19,6 +20,7 @@
     - @movies.each do |movie|
       %tr
         %td= movie.title 
+        %td= movie.director
         %td= movie.rating
         %td= movie.release_date
         %td= link_to "More about #{movie.title}", movie_path(movie)
